@@ -1,6 +1,44 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-function SignUp() {
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+
+export default function SignUp() {
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        setLoading(false);
+        setError(data.message);
+        return;
+      }
+      setLoading(false);
+      setError(null);
+      navigate('/sign-in');
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
     <div
@@ -12,12 +50,14 @@ function SignUp() {
         <span className="font-light text-gray-400 mb-8">
           Please enter your details
         </span>
+        <form onSubmit={handleSubmit}>
         <div className="py-4">
           <span className="mb-2 text-md">Username</span>
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
             id="username"
+            onChange={handleChange}
           />
         </div>
         <div className="py-4">
@@ -26,6 +66,7 @@ function SignUp() {
             type="email"
             className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
             id="email"
+            onChange={handleChange}
           />
         </div>
         <div className="py-4">
@@ -33,6 +74,7 @@ function SignUp() {
           <input
             type="password"
             id="passwpord"
+            onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
           />
         </div>
@@ -43,16 +85,19 @@ function SignUp() {
           </div>
           
         </div>
-        <button
+        <button disabled={loading}
           className="w-full bg-black text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300"
         >
-          Sign Up
+          
+          {loading ? 'Loading...' : 'Sign Up'}
         </button>
         <button
           className="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white"
         >
           <p>Sign in with Google</p>
         </button>
+        </form>
+        
         <div className="text-center text-gray-400">
           Have an account?
           <Link to={"/sign-in"}>
@@ -69,8 +114,7 @@ function SignUp() {
         />
       </div>
     </div>
+    {error && <p className='text-red-500 mt-5'>{error}</p>}
   </div>
-  )
+  );
 }
-
-export default SignUp

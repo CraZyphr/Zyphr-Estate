@@ -83,12 +83,12 @@ export default function SignUp() {
             className="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-slate-600"
           >
             <img src="https://www.salesforceben.com/wp-content/uploads/2021/03/google-logo-icon-PNG-Transparent-Background-2048x2048.png" alt="img" className="w-6 h-6 inline mr-2" />
-            Sign in with Google
+            Sign In with Google
           </button>
           <div className='flex gap-2 mt-5'>
       <p>Have an account?</p>
       <Link to={'/sign-in'}>
-        <span className='text-slate-800  hover:text-blue-500'>Sign in</span>
+        <span className='text-slate-800  hover:text-blue-500'>Sign In</span>
       </Link>
     </div>
         </div>
